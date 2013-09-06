@@ -1,0 +1,4 @@
+Content-Type: multipart/form-data;
+Content-Disposition: form-data; name="uri"
+Content-Disposition: form-data; name="username"
+Content-Disposition: form-data; name="password"
