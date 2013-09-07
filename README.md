@@ -1,20 +1,24 @@
 Login Script & Fetch Data for Ubiquiti AirOS devices
 =============================================================
-Pequeña script en Python en estado mas que beta para poder recolectar informacion de equipos
-de Ubiquiti (www.ubnt.com) que ya no se obtiene via SNMP.
+Little python script in beta stage for retrieve data of Ubiquiti AirOs devices, trought the web server, that is
+not possible to be retrieved via SNMP (changed in last updates for Ubiquiti firmware).
+You could retrieve some useful information, like channel,ccq, or frequency , for graph purposes or just for info.
 
-Los equipos soportados son todos aquellos que llevan AirOs 5.5.4 en adelante.
-Es necesario contar con la libreria "requests" de Python.
+Requierements:
+You need to use the firmware 5.5.4 for best usage, and python-requests package installied.
 
-Uso:
+Usage:
 
-ublogin.py host username password
+./ublogin.py  -i ip/hostname -u user -p password -s [ssl|off] -d [channel|freq|ccq]
 
-Ex: ublogin.py 192.168.1.20 ubnt ubnt
+Ex: /ublogin.py -i 192.168.1.20 -u ubnt -p ubnt -s off -d frequency
 
-Nota:
+These options are avaliable for "-d" data retrive:
 
--No funciona si el acceso a la antena es via ssl (lo implementare en breve)
+mode essid apmac channel frequency signal rssi noisef rstatus stats rx_nwids rx_crypts rx_frags tx_retries missed_beacons err_other hide_essid opmode antenna chains ack distance ccq txrate rxrate security qos count polling enabled quality capacity noack airsync_mode airsync_connections airsync_down_util airsync_up_util
 
--De momento, los valores han de ser extraidos via grep, la proxima release ya podran ser consultados via su nombre, como pueden ser "frequency" o "channel".
+
+Notes:
+-Due the beta stage of the script, its not be possible to access trought https.
+It will be implemented early.
 
