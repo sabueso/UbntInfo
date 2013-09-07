@@ -1,23 +1,77 @@
 #!/usr/bin/env python
+import getopt,sys,re
+import StringIO
 
-import requests
-import sys
+try:
+	import requests
+except ImportError:
+	print "python-requests needs to be instaled"
+	sys.exit()
+else:
+	pass
 
 
-r= requests.get('http://'+str(sys.argv[1])+'/login.cgi')
+def airosauth(ipdata,usernamedata,passdata):
+	#Query for session and executes the auth request to the web server
+	r=requests.get('http://'+ipdata+'/login.cgi')
+	#We try to obtain a session to be authenticated
+	try:
+		global cookiesairos
+		cookiesairos=dict(AIROS_SESSIONID=''+str(r.cookies['AIROS_SESSIONID'])+'')
+	except not cookiesairos:
+		print "Could not obtaing any AIROS session. Is the webserver ip in the device?"
+	#Construct the data ot be sended
+	authdata={'uri': '/', 'username': ''+usernamedata+'','password':''+passdata+''}
+	authformfile={'file': ('form.txt', open('form.txt', 'rb'))}
+	#Make the request, sending the cookies, data for auth, and form to do it well
+	a=requests.post('http://'+ipdata+'/login.cgi', cookies=cookiesairos, data=authdata, files=authformfile)
+	#Return status code of the web request
+	return
 
-print "Status de peticion inicial:"+str(r.status_code)+""
-print "===================================================================="
-cookiesairos=dict(AIROS_SESSIONID=''+str(r.cookies['AIROS_SESSIONID'])+'')
-print cookiesairos
+def datareq(ipdata):
+	#Do the request of the cgi scripts that retrieves the data
+	global b
+	b=requests.get('http://'+ipdata+'/iflist.cgi',cookies=cookiesairos)
+	#print b.text
 
-print "===================================================================="
-datos = {'uri': '/', 'username': ''+sys.argv[2]+'','password':''+sys.argv[3]+''}
-#Encontrado en https://github.com/shazow/urllib3/issues/111
-ficheros = {'file': ('form.txt', open('form.txt', 'rb'))}
-a = requests.post('http://'+str(sys.argv[1])+'/login.cgi', cookies=cookiesairos, data=datos, files=ficheros)
-print "Status de autentificacion:"+str(a.status_code)+""
-print "===================================================================="
-b= requests.get('http://'+str(sys.argv[1])+'/iflist.cgi',cookies=cookiesairos)
-print "Salida final"
-print b.text
+def filterdata(req):
+	#Filter the neccesary data and clean it
+	buf = StringIO.StringIO(b.text)
+	arr=[]
+	for line in buf:
+		if re.match(r'^\s*$', line):
+			pass
+		else:
+			arr.append(line.rstrip('\n'))
+	for i in arr:
+		if str("\""+req+"\"") in i:
+			output=i.rstrip('\,').strip().strip(':')
+			of=re.sub("\""+req+"\": ",'',output)
+			print str(of)
+
+
+def main(argv):
+	try:
+		opts, args = getopt.getopt(argv,"hi:u:p:s:d:")
+	except getopt.GetoptError:
+		print "Options are not recognized: -i ip/hostname -u user -p password -s ssl -d [channel|freq|ccq]"
+	for opt, arg in opts:
+		if opt == '-h':
+			print "Options are not recognized: -i ip/hostname -u user -p password -s [ssl|off] -d [channel|freq|ccq]"
+			sys.exit()
+		elif opt in ("-i"):
+			ip = arg
+		elif opt in ("-u"):
+			username = arg
+		elif opt in ("-p"):
+			password = arg
+		elif opt in ("-s"):
+			sec = arg
+		elif opt in ("-d"):
+			info = arg
+	airosauth(ip,username,password)
+	datareq(ip)
+	filterdata(info)
+
+if __name__ == "__main__":
+	   main(sys.argv[1:])

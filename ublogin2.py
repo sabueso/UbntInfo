@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-import getopt,sys
+import getopt,sys,re
+import StringIO
+
 try:
 	import requests
 except ImportError:
@@ -7,7 +9,6 @@ except ImportError:
 	sys.exit()
 else:
 	pass
-cookiesairos=''
 
 
 def airosauth(ipdata,usernamedata,passdata):
@@ -28,14 +29,28 @@ def airosauth(ipdata,usernamedata,passdata):
 	return
 
 def datareq(ipdata):
+	#Do the request of the cgi scripts that retrieves the data
+	global b
 	b=requests.get('http://'+ipdata+'/iflist.cgi',cookies=cookiesairos)
-	print b.text
+	#print b.text
+
+def filterdata(req):
+	#Filter the neccesary data and clean it
+	buf = StringIO.StringIO(b.text)
+	arr=[]
+	for line in buf:
+		if re.match(r'^\s*$', line):
+			pass
+		else:
+			arr.append(line.rstrip('\n'))
+	for i in arr:
+		if str("\""+req+"\"") in i:
+			output=i.rstrip('\,').strip().strip(':')
+			of=re.sub("\""+req+"\": ",'',output)
+			print str(of)
+
 
 def main(argv):
-	ip=''
-	username=''
-	password=''
-	sec=''
 	try:
 		opts, args = getopt.getopt(argv,"hi:u:p:s:d:")
 	except getopt.GetoptError:
@@ -52,8 +67,11 @@ def main(argv):
 			password = arg
 		elif opt in ("-s"):
 			sec = arg
+		elif opt in ("-d"):
+			info = arg
 	airosauth(ip,username,password)
 	datareq(ip)
+	filterdata(info)
 
 if __name__ == "__main__":
 	   main(sys.argv[1:])
