@@ -47,6 +47,8 @@ def filterdata(req):
 		if str("\""+req+"\"") in i:
 			output=i.rstrip('\,').strip().strip(':')
 			of=re.sub("\""+req+"\": ",'',output)
+			if "MHz" in of:
+				of=re.sub(" MHz\"",'',of).strip("\"")
 			print str(of)
 
 
