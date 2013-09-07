@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import requests
-import pprint as pp
 import sys
 
 

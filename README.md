@@ -1,5 +1,5 @@
-Ubiquiti Login Script
-==============================================
+Ubiquiti Login Script & Fetch Data for Ubiquiti AirOS devices
+=============================================================
 Pequeña script en Python en estado mas que beta para poder recolectar informacion de equipos
 de Ubiquiti (www.ubnt.com) que ya no se obtiene via SNMP.
 
