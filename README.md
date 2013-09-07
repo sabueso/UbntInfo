@@ -1,4 +1,4 @@
-Login Script & Fetch Data for Ubiquiti AirOS devices
+Login&Fetch Data script for Ubiquiti AirOS devices
 =============================================================
 Little python script in beta stage for retrieve data of Ubiquiti AirOs devices, trought the web server, that is
 not possible to be retrieved via SNMP (changed in last updates for Ubiquiti firmware).
