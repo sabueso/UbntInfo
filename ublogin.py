@@ -44,7 +44,6 @@ def filterdata(req):
 		else:
 			arr.append(line.rstrip('\n'))
 	for i in arr:
-		print i
 		if str("\""+req+"\"") in i:
 			output=i.rstrip('\,').strip().strip(':')
 			of=re.sub("\""+req+"\": ",'',output)
