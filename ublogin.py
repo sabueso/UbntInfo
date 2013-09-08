@@ -14,10 +14,11 @@ else:
 
 def airosauth(ipdata,usernamedata,passdata):
 	#Query for session and executes the auth request to the web server
+	global ssl
 	try:
+		ssl="off"
 		r=requests.get('http://'+ipdata+'/login.cgi')
 	except:
-		global ssl
 		ssl="on"
 		r=requests.get('https://'+ipdata+'/login.cgi',verify=False)
 	#We try to obtain a session to be authenticated
