@@ -9,7 +9,7 @@ You need to use the firmware 5.5.4 for best usage, and python-requests package i
 
 Usage:
 
-./ublogin.py  -i ip/hostname -u user -p password -s [ssl|off] -d [channel|freq|ccq]
+./ublogin.py  -i ip/hostname -u user -p password -s [ssl|off] -d [channel|frequency|ccq|signal|rssi]
 
 Ex: /ublogin.py -i 192.168.1.20 -u ubnt -p ubnt -s off -d frequency
 
