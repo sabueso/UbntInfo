@@ -4,6 +4,9 @@ import StringIO
 
 dirname, filename = os.path.split(os.path.abspath(__file__))
 
+debug=''
+outputformat=''
+
 try:
 	import requests
 except ImportError:
@@ -74,21 +77,29 @@ def filterdata(req):
 			arr.append(line.rstrip('\n'))
 	for i in arr:
 		if str("\""+req+"\"") in i:
+			#Strip ":" characters
 			output=i.rstrip('\,').strip().strip(':')
+			#Clear " characters
 			of=re.sub("\""+req+"\": ",'',output)
+			#Clean MHz string
 			if "MHz" in of:
 				of=re.sub(" MHz\"",'',of).strip("\"")
-			print str(of)
+			#Print formated or starndart output
+			if outputformat == "zenoss":
+				print str("Outputof"+req+"|dataoutput="+of+"")
+			else:
+				print str(of)
+
 
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hi:u:p:s:d:v")
+		opts, args = getopt.getopt(argv,"hi:u:p:s:d:vo:")
 	except getopt.GetoptError:
-		print "Options are not recognized: -i ip/hostname -u user -p password -s ssl -d [channel|freq|ccq]"
+		print "Options are not recognized: -i ip/hostname -u user -p password -d [channel|freq|ccq] -o [zenoss]"
 	for opt, arg in opts:
 		if opt == '-h':
 			print "\n"
-			print "Usage -i ip/hostname -u user -p password -s [ssl|off] -d [channel|frequency|ccq]\n"
+			print "Usage -i ip/hostname -u user -p password -d [channel|frequency|ccq] -o [zenoss]\n"
 			print "-d options:"
 			print "mode essid apmac channel frequency signal rssi noisef rstatus stats rx_nwids rx_crypts rx_frags tx_retries missed_beacons err_other hide_essid opmode antenna chains ack distance ccq txrate rxrate security qos count polling enabled quality capacity noack airsync_mode airsync_connections airsync_down_util airsync_up_util"
 			print "\n"
@@ -103,6 +114,10 @@ def main(argv):
 			sec = arg
 		elif opt in ("-d"):
 			info = arg
+		elif opt in ("-o"):
+			if arg == "zenoss":
+				global outputformat
+	                        outputformat="zenoss"
 	#Control de verbose mode
 	if "-v" in str(opts):
 		global debug
@@ -111,6 +126,11 @@ def main(argv):
 		print opts
 	else:
 		debug="off"
+	if "-o" in str(opts):
+		pass
+	else:
+		outputformat="clear"
+	#Define zenossoutput
 	#Execute the 3 functions of the script...
 	airosauth(ip,username,password)
 	datareq(ip)
