@@ -20,6 +20,4 @@ mode essid apmac channel frequency signal rssi noisef rstatus stats rx_nwids rx_
 
 Notes:
 
--Due the beta stage of the script, its not be possible to access trought https.
-It will be implemented early.
-
+Now support SSL, but the certs are no verified.

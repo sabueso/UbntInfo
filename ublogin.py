@@ -12,7 +12,12 @@ else:
 
 def airosauth(ipdata,usernamedata,passdata):
 	#Query for session and executes the auth request to the web server
-	r=requests.get('http://'+ipdata+'/login.cgi')
+	try:
+		r=requests.get('http://'+ipdata+'/login.cgi')
+	except:
+		global ssl
+		ssl="on"
+		r=requests.get('https://'+ipdata+'/login.cgi',verify=False)
 	#We try to obtain a session to be authenticated
 	try:
 		global cookiesairos
@@ -23,7 +28,10 @@ def airosauth(ipdata,usernamedata,passdata):
 	authdata={'uri': '/', 'username': ''+usernamedata+'','password':''+passdata+''}
 	authformfile={'file': ('form.txt', open('form.txt', 'rb'))}
 	#Make the request, sending the cookies, data for auth, and form to do it well
-	a=requests.post('http://'+ipdata+'/login.cgi', cookies=cookiesairos, data=authdata, files=authformfile)
+	if ssl == "on":
+	        a=requests.post('https://'+ipdata+'/login.cgi', cookies=cookiesairos, data=authdata, files=authformfile,verify=False)
+	else:
+		a=requests.post('http://'+ipdata+'/login.cgi', cookies=cookiesairos, data=authdata, files=authformfile)
 	#Return status code of the web request
 	if debug=="on":
 		print "===="
@@ -38,7 +46,10 @@ def airosauth(ipdata,usernamedata,passdata):
 def datareq(ipdata):
 	#Do the request of the cgi scripts that retrieves the data
 	global b
-	b=requests.get('http://'+ipdata+'/iflist.cgi',cookies=cookiesairos)
+	if ssl == "on":
+	        b=requests.get('https://'+ipdata+'/iflist.cgi',cookies=cookiesairos,verify=False)
+	else:
+		b=requests.get('http://'+ipdata+'/iflist.cgi',cookies=cookiesairos)
         if debug=="on":
                 print "===="
                 print "Output of \"b\" object"
@@ -73,7 +84,11 @@ def main(argv):
 		print "Options are not recognized: -i ip/hostname -u user -p password -s ssl -d [channel|freq|ccq]"
 	for opt, arg in opts:
 		if opt == '-h':
-			print "Options are not recognized: -i ip/hostname -u user -p password -s [ssl|off] -d [channel|frequency|ccq]"
+			print "\n"
+			print "Usage -i ip/hostname -u user -p password -s [ssl|off] -d [channel|frequency|ccq]\n"
+			print "-d options:"
+			print "mode essid apmac channel frequency signal rssi noisef rstatus stats rx_nwids rx_crypts rx_frags tx_retries missed_beacons err_other hide_essid opmode antenna chains ack distance ccq txrate rxrate security qos count polling enabled quality capacity noack airsync_mode airsync_connections airsync_down_util airsync_up_util"
+			print "\n"
 			sys.exit()
 		elif opt in ("-i"):
 			ip = arg
