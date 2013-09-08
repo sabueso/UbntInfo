@@ -32,6 +32,8 @@ If you create a local template for graph Ubiquiti devices in ZenOss, you only ha
 command with "-o zenoss", and then add a Data Point with the "dataoutput" string, and link it to Graph Definition, and thats all!
 Your data graphed on ZenOss ;)
 
+If you still needs help on create custom graphs , look here: http://virtuallyhyper.com/2013/03/monitor-different-systems-with-zenoss/
+
 **Remember that ZenOss comes with a bundled version of Python, so you have to install python-requests manually!
 You can follow a little how-to here: http://community.zenoss.org/thread/16119**
 
