@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import getopt,sys,re
+import getopt,sys,re,os
 import StringIO
 
 try:
@@ -26,7 +26,7 @@ def airosauth(ipdata,usernamedata,passdata):
 		print "Could not obtaing any AIROS session. Is the webserver ip in the device?"
 	#Construct the data ot be sended
 	authdata={'uri': '/', 'username': ''+usernamedata+'','password':''+passdata+''}
-	authformfile={'file': ('form.txt', open('form.txt', 'rb'))}
+	authformfile={'file': ('form.txt', open(''+str(os.getcwd())+'/form.txt', 'rb'))}
 	#Make the request, sending the cookies, data for auth, and form to do it well
 	if ssl == "on":
 	        a=requests.post('https://'+ipdata+'/login.cgi', cookies=cookiesairos, data=authdata, files=authformfile,verify=False)
