@@ -94,8 +94,11 @@ def filterdata(req):
 def main(argv):
 	try:
 		opts, args = getopt.getopt(argv,"hi:u:p:s:d:vo:")
-	except getopt.GetoptError:
+	except:
 		print "Options are not recognized: -i ip/hostname -u user -p password -d [channel|freq|ccq] -o [zenoss]"
+	if not opts :
+		print "Please, for usage use -h option"
+		sys.exit()
 	for opt, arg in opts:
 		if opt == '-h':
 			print "\n"
